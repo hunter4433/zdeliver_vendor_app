@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mrs_gorilla_vendor/main.dart';
 import 'package:mrs_gorilla_vendor/signup.dart';
 import 'otp_number.dart';
 import 'package:http/http.dart' as http;
@@ -25,38 +29,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // New API call for OTP verification
   Future<Map<String, dynamic>> sendOtpVerification(String phoneNumber) async {
-    final String baseUrl = 'http://3.111.39.222/api/v1/vendor';
+    final String baseUrl = 'http://13.126.169.224/api/v1/vendor';
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/send-otp'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'phone_no': phoneNumber,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'phone_no': phoneNumber}),
       );
 
       print('OTP verification response: ${response.body}');
-      print(response.statusCode );
+      print(response.statusCode);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else if (response.statusCode == 404) {
-        Map<String, dynamic> response= {"error":"You don't have an account","action":"signup"};
+        Map<String, dynamic> response = {
+          "error": "You don't have an account",
+          "action": "signup",
+        };
         return response; // Or whatever signup value you want to return
       } else {
         // Handle other non-200 status codes
         throw Exception('Failed to send OTP: ${response.statusCode}');
       }
-
     } catch (e) {
       print('Error sending OTP: $e');
       // Return a default response or rethrow
-      return {
-        'message': 'Network error. Please try again.',
-        'action': 'retry'
-      };
+      return {'message': 'Network error. Please try again.', 'action': 'retry'};
     }
   }
 
@@ -74,7 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -100,8 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          Colors.white.withOpacity(0.98), // More opaque at bottom
-                          Colors.white.withOpacity(0.0), // Completely transparent at top
+                          Colors.white.withOpacity(
+                            0.98,
+                          ), // More opaque at bottom
+                          Colors.white.withOpacity(
+                            0.0,
+                          ), // Completely transparent at top
                         ],
                       ),
                     ),
@@ -114,7 +118,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   right: 0,
                   child: Center(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(18), // Rounded corners for the logo
+                      borderRadius: BorderRadius.circular(
+                        18,
+                      ), // Rounded corners for the logo
                       child: Image.asset(
                         'assets/images/newlogo.png',
                         fit: BoxFit.cover,
@@ -160,7 +166,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10, // Restrict to 10 digits
-                onChanged: _validatePhoneNumber, // Call function on input change
+                onChanged:
+                    _validatePhoneNumber, // Call function on input change
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -172,7 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   counterText: "", // Hide character count
                   hintStyle: const TextStyle(color: Colors.grey),
                   prefix: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 1,
+                    ),
                     margin: const EdgeInsets.only(right: 10),
                     child: const Text(
                       '+91',
@@ -208,11 +218,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // Navigation code here
+                  onPressed: () async {
+                    // // Navigation code here
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => VendorLoginPage()),
+                      MaterialPageRoute(
+                        builder: (context) => VendorLoginPage(),
+                      ),
                     );
                   },
                   child: const Text(
@@ -220,7 +232,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.blue, // You can change this color to match your theme
+                      color:
+                          Colors
+                              .blue, // You can change this color to match your theme
                     ),
                   ),
                 ),
@@ -232,52 +246,68 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ElevatedButton(
-                onPressed: isButtonEnabled
-                    ? () async {
-                  // Show loading indicator
-                  setState(() {
-                    isLoading = true;
-                  });
+                onPressed:
+                    isButtonEnabled
+                        ? () async {
+                          // Show loading indicator
+                          setState(() {
+                            isLoading = true;
+                          });
 
-                  // Call the new OTP verification API
-                  final otpResponse = await sendOtpVerification(_phoneController.text);
+                          // Call the new OTP verification API
+                          final otpResponse = await sendOtpVerification(
+                            _phoneController.text,
+                          );
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                  // Check if OTP was sent successfully
-                  if (otpResponse['action'] == 'verify-otp') {
-                    // If successful, navigate to OTP verification screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OtpVerificationScreen(
-                          phoneNumber: _phoneController.text,
-                        ),
-                      ),
-                    );
-                  } else if (otpResponse['action'] == 'signup') {
-                    // If user needs to sign up, navigate to signup page
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(otpResponse['message'] ?? 'Please register first')),
-                    );
+                          // Check if OTP was sent successfully
+                          if (otpResponse['action'] == 'verify-otp') {
+                            // If successful, navigate to OTP verification screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => OtpVerificationScreen(
+                                      phoneNumber: _phoneController.text,
+                                    ),
+                              ),
+                            );
+                          } else if (otpResponse['action'] == 'signup') {
+                            // If user needs to sign up, navigate to signup page
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  otpResponse['message'] ??
+                                      'Please register first',
+                                ),
+                              ),
+                            );
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VendorLoginPage()),
-                    );
-                  } else {
-                    // Handle other cases (retry, error, etc.)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(otpResponse['message'] ?? 'Something went wrong')),
-                    );
-                  }
-                }
-                    : null,
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VendorLoginPage(),
+                              ),
+                            );
+                          } else {
+                            // Handle other cases (retry, error, etc.)
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  otpResponse['message'] ??
+                                      'Something went wrong',
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isButtonEnabled ? Color(0xFF49C71F)
-                      : Colors.grey[400],
+                  backgroundColor:
+                      isButtonEnabled ? Color(0xFF49C71F) : Colors.grey[400],
                   foregroundColor: Colors.white,
                   elevation: 0,
                   minimumSize: const Size(double.infinity, 55),
@@ -285,15 +315,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                  'Continue',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child:
+                    isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                          'Continue',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
               ),
             ),
 
@@ -322,13 +353,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TermsOfServiceScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => TermsOfServiceScreen(),
+                            ),
                           );
                         },
                         style: TextButton.styleFrom(
                           minimumSize: Size.zero, // Ensures no extra space
-                          padding: EdgeInsets.zero, // Removes padding inside button
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Shrinks tap area
+                          padding:
+                              EdgeInsets.zero, // Removes padding inside button
+                          tapTargetSize:
+                              MaterialTapTargetSize
+                                  .shrinkWrap, // Shrinks tap area
                         ),
                         child: const Text(
                           'Terms of Service',
@@ -346,7 +382,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => PrivacyPolicyScreen(),
+                            ),
                           );
                         },
                         style: TextButton.styleFrom(
