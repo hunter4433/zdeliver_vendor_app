@@ -15,7 +15,8 @@ class VendorLoginPage extends StatefulWidget {
 
 class _VendorLoginPageState extends State<VendorLoginPage> {
   final TextEditingController _vendorIdController = TextEditingController();
-  final TextEditingController _vendorPasskeyController = TextEditingController();
+  final TextEditingController _vendorPasskeyController =
+      TextEditingController();
 
   // API call method to verify credentials
   Future<void> _verifyCredentials() async {
@@ -24,9 +25,7 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+        return const Center(child: CircularProgressIndicator());
       },
     );
 
@@ -40,11 +39,11 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
 
       // Make API call
       final response = await http.post(
-        Uri.parse('http://3.111.39.222/api/v1/vendor/verify-credentials'),
+        Uri.parse('http://13.126.169.224/api/v1/vendor/verify-credentials'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
-
+      print('Response status: ${response.body}');
       // Close loading dialog
       Navigator.pop(context);
 
@@ -58,18 +57,23 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MainScreen(
-                initialIndex: 2, // Or any specific index you want
-              ),
+              builder:
+                  (context) => MainScreen(
+                    initialIndex: 2, // Or any specific index you want
+                  ),
             ),
           );
         } else {
           // Show error message
-          _showErrorMessage('Verification failed. Please check your credentials.');
+          _showErrorMessage(
+            'Verification failed. Please check your credentials.',
+          );
         }
       } else {
         // Show error for non-200 response
-        _showErrorMessage('Server error: ${response.statusCode}. Please try again later.');
+        _showErrorMessage(
+          'Server error: ${response.statusCode}. Please try again later.',
+        );
       }
     } catch (e) {
       // Close loading dialog
@@ -124,13 +128,23 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NearestWarehousePage()),
+                        MaterialPageRoute(
+                          builder: (context) => NearestWarehousePage(),
+                        ),
                       );
                     },
-                    icon: Icon(Icons.location_on, color: Colors.white,size: 30,),
+                    icon: Icon(
+                      Icons.location_on,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                     label: Text(
                       'Locate your nearest warehouse',
-                      style: TextStyle(color: Colors.white,fontSize: 18,fontWeight:FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF49C71F),
@@ -150,10 +164,14 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
                     onPressed: () {
                       // Add contact warehouse logic
                     },
-                    icon: Icon(Icons.phone, color: Colors.white,size: 30,),
+                    icon: Icon(Icons.phone, color: Colors.white, size: 30),
                     label: Text(
                       'Contact your nearest warehouse',
-                      style: TextStyle(color: Colors.white,fontSize: 18,fontWeight:FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFF15A25),
@@ -178,7 +196,12 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 18.0,bottom: 20,top: 15,right: 18),
+          padding: const EdgeInsets.only(
+            left: 18.0,
+            bottom: 20,
+            top: 15,
+            right: 18,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -186,7 +209,11 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back,color: Colors.black,size: 35,),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                      size: 35,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -194,10 +221,7 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
                   const SizedBox(width: 8),
                   const Text(
                     'Enter Credentials',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -206,28 +230,38 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
               // Vendor ID TextField
               const Text(
                 'Vendor ID',
-                style: TextStyle(fontWeight: FontWeight.w500,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
                   fontSize: 17,
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height:7),
-              TextField(style: TextStyle(color: Colors.black,fontSize: 17),
+              const SizedBox(height: 7),
+              TextField(
+                style: TextStyle(color: Colors.black, fontSize: 17),
                 controller: _vendorIdController,
                 decoration: InputDecoration(
                   hintText: 'Enter vendor ID',
-                  hintStyle: const TextStyle(color: Colors.grey), // Set hint text color
+                  hintStyle: const TextStyle(
+                    color: Colors.grey,
+                  ), // Set hint text color
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.black12), // Set border color
+                    borderSide: const BorderSide(
+                      color: Colors.black12,
+                    ), // Set border color
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.grey), // Border color when not focused
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                    ), // Border color when not focused
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.blue), // Border color when focused
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                    ), // Border color when focused
                   ),
                 ),
               ),
@@ -236,30 +270,40 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
               // Vendor Passkey TextField
               const Text(
                 'Vendor Passkey',
-                style: TextStyle(fontWeight: FontWeight.w500,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
                   fontSize: 17,
                   color: Colors.black87,
                 ),
               ),
 
-              const SizedBox(height:7),
-              TextField(style: TextStyle(color: Colors.black,fontSize: 17),
+              const SizedBox(height: 7),
+              TextField(
+                style: TextStyle(color: Colors.black, fontSize: 17),
                 controller: _vendorPasskeyController,
                 obscureText: true, // Added to hide passkey input
                 decoration: InputDecoration(
                   hintText: 'Enter vendor passkey',
-                  hintStyle: const TextStyle(color: Colors.grey), // Set hint text color
+                  hintStyle: const TextStyle(
+                    color: Colors.grey,
+                  ), // Set hint text color
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.black12), // Set border color
+                    borderSide: const BorderSide(
+                      color: Colors.black12,
+                    ), // Set border color
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.grey), // Border color when not focused
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                    ), // Border color when not focused
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.blue), // Border color when focused
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                    ), // Border color when focused
                   ),
                 ),
               ),
@@ -269,19 +313,21 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Already have an account?',style: TextStyle(fontSize: 15),),
+                  const Text(
+                    'Already have an account?',
+                    style: TextStyle(fontSize: 15),
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()
-                          )
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
                       );
                     },
                     child: const Text(
                       'Login',
-                      style: TextStyle(fontSize: 15,
+                      style: TextStyle(
+                        fontSize: 15,
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),
@@ -297,7 +343,8 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
                   onPressed: _showVendorInfoBottomSheet,
                   child: const Text(
                     'Where to get Vendor ID and Passkey?',
-                    style: TextStyle(fontSize: 15,
+                    style: TextStyle(
+                      fontSize: 15,
                       color: Colors.black,
                       decoration: TextDecoration.underline,
                     ),
@@ -310,10 +357,14 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _verifyCredentials, // Updated to use the API call method
+                  onPressed:
+                      _verifyCredentials, // Updated to use the API call method
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF49C71F),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
