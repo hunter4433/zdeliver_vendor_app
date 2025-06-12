@@ -154,9 +154,7 @@ class _MapScreenState extends State<MapScreen> {
       final cartBytes = rootBundle.load(
         'assets/images/562f42a9-1836-4cf7-8132-2a97588a62fb-removebg-preview 2.png',
       );
-      final warehouseBytes = rootBundle.load(
-        'assets/images/562f42a9-1836-4cf7-8132-2a97588a62fb-removebg-preview 2.png',
-      );
+      final warehouseBytes = rootBundle.load('assets/images/home8.png');
 
       final results = await Future.wait([
         locationBytes,
@@ -617,38 +615,39 @@ class _MapScreenState extends State<MapScreen> {
       }
 
       await cartAnnotationManager!.createMulti(cartAnnotations);
-      // Draw shadow (larger, more transparent)
-      final shadowCoords = _generateCircleCoordinates(
-        warehousePosition!.latitude,
-        warehousePosition!.longitude,
-        6.2, // Slightly larger radius for shadow
-      );
-      await routeLineManager!.create(
-        mapbox.PolylineAnnotationOptions(
-          geometry: mapbox.LineString(coordinates: shadowCoords),
-          lineColor: 0xFF87CEEB, // Use a color that stands out against the map
-          lineWidth: 7.0, // Wider than main circle
-          lineOpacity: 0.2, // More transparent
-        ),
-      );
 
-      // Draw a circular polyline (6km radius) around the warehouse
-      final circleCoords = _generateCircleCoordinates(
-        warehousePosition!.latitude,
-        warehousePosition!.longitude,
-        6, // 6km radius
-      );
+      // // Draw shadow (larger, more transparent)
+      // final shadowCoords = _generateCircleCoordinates(
+      //   warehousePosition!.latitude,
+      //   warehousePosition!.longitude,
+      //   6.2, // Slightly larger radius for shadow
+      // );
+      // await routeLineManager!.create(
+      //   mapbox.PolylineAnnotationOptions(
+      //     geometry: mapbox.LineString(coordinates: shadowCoords),
+      //     lineColor: 0xFF87CEEB, // Use a color that stands out against the map
+      //     lineWidth: 7.0, // Wider than main circle
+      //     lineOpacity: 0.2, // More transparent
+      //   ),
+      // );
 
-      mapbox.PolylineAnnotationOptions circleOptions =
-          mapbox.PolylineAnnotationOptions(
-            geometry: mapbox.LineString(coordinates: circleCoords),
-            lineColor: // blue color
-                0xFF1976D2, // Use a color that stands out against the map
+      // // Draw a circular polyline (6km radius) around the warehouse
+      // final circleCoords = _generateCircleCoordinates(
+      //   warehousePosition!.latitude,
+      //   warehousePosition!.longitude,
+      //   6, // 6km radius
+      // );
 
-            lineWidth: 3.0,
-            lineOpacity: 0.7,
-          );
-      await routeLineManager!.create(circleOptions);
+      // mapbox.PolylineAnnotationOptions circleOptions =
+      //     mapbox.PolylineAnnotationOptions(
+      //       geometry: mapbox.LineString(coordinates: circleCoords),
+      //       lineColor: // blue color
+      //           0xFF1976D2, // Use a color that stands out against the map
+
+      //       lineWidth: 3.0,
+      //       lineOpacity: 0.7,
+      //     );
+      // await routeLineManager!.create(circleOptions);
 
       // Optionally, adjust camera to fit the circle
       await mapboxMap!.flyTo(
@@ -659,7 +658,7 @@ class _MapScreenState extends State<MapScreen> {
               warehousePosition!.latitude,
             ),
           ),
-          zoom: 11.4, // Adjust as needed to fit the circle
+          zoom: 15, // Adjust as needed to fit the circle
           bearing: 30,
           pitch: 45,
         ),
