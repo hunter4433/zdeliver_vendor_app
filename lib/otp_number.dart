@@ -58,10 +58,34 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
       if (response.statusCode == 200) {
         // Successful verification
-         final int vendorId = responseData['vendor']['id'] ?? 0;
+        final int vendorId = responseData['vendor']['id'] ?? 0;
+        final warehouseId = responseData['vendor']['warehouse_id'] ?? 0;
+        final wareHouseLat = responseData['vendor']['warehouse_lat'] ?? 26.8500;
+        final wareHouseLong =
+            responseData['vendor']['warehouse_long'] ?? 80.949997;
+        final vendorLat = responseData['vendor']['lat'] ?? 26.8500;
+        final vendorLong = responseData['vendor']['long'] ?? 80.949997;
+        print('Vendor ID: $vendorId');
+        print('Warehouse ID: $warehouseId');
+        print('Warehouse Lat: $wareHouseLat');
+        print('Warehouse Long: $wareHouseLong');
+        print('Vendor Lat: $vendorLat');
+        print('Vendor Long: $vendorLong');
+
         // Store the access token securely
         await storage.write(key: 'isLoggedIn', value: 'true');
         await storage.write(key: 'vendorId', value: vendorId.toString());
+        await storage.write(key: 'warehouse_id', value: warehouseId.toString());
+        await storage.write(
+          key: 'warehouse_lat',
+          value: wareHouseLat.toString(),
+        );
+        await storage.write(
+          key: 'warehouse_long',
+          value: wareHouseLong.toString(),
+        );
+        await storage.write(key: 'vendor_lat', value: vendorLat.toString());
+        await storage.write(key: 'vendor_long', value: vendorLong.toString());
         return {
           'success': true,
           'message': 'OTP verified successfully',
